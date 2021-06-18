@@ -9,20 +9,22 @@
 
 download the release from github, extract it
 
-`go build`
+edit `./config/config.go` fill the token and other missing settings 
 
-`./discord-bot`
+run `go build`
+
+run `./discord-bot`
 
 ## Status debug :
 
-code 0 => success (when shutdown command is done)
+exit code 0 => success (when shutdown command is done)
 
-code 1 => Error occured
+exit code 1 => Error occured
 
-code 3 => Bot init error
+exit code 3 => Bot init error
 
-code 4 => Bot connect error
+exit code 4 => Bot connect error
 
-code 5 => Bot cache init error
+exit code 5 => Bot cache init error
 
-code 6 => Bot cache filling error
+exit code 6 => Bot cache filling error
