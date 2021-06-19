@@ -2,8 +2,10 @@
 
 ## Requirements : 
 
-- Rethinkdb (2.4.1 or newer)
+- Rethinkdb (2.4.1 or newer) 
 - golang (1.16 or newer)
+
+Note : You can disable the database option but this will disable many bot function 
 
 ## How to install the bot :
 
@@ -28,3 +30,5 @@ exit code 4 => Bot connect error
 exit code 5 => Bot cache init error
 
 exit code 6 => Bot cache filling error
+
+exit code 7 => DataBase connection error
