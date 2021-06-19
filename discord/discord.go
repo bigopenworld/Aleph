@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bigopenworld/discord-bot/config"
+	"github.com/bigopenworld/discord-bot/database"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -30,32 +31,46 @@ func CreateAndStart() bool {
 // start func
 func (bot *BotStruct) start() bool {
 	Bot.Lock()
-	fmt.Println("Bot Starting ... 1 of 2 : Bot init and connection")
+	fmt.Println("Bot Starting ... 1 of 3 : Bot init and connection")
 	err := Bot.connect()
 	if err != 0 {
 		bot.Unlock()
 		Bot.tryrestartorkill(err, false)
+		return true 
 	}
-	fmt.Println("Bot Starting ... 2 of 2 : Bot cache starting")
-	fmt.Println()
+	fmt.Println("Bot Starting ... 2 of 3 : Bot cache starting")
 	if (config.Cache) {
 		Bot.cache = NewBotCache()
 		cacheresult := Bot.cache.init()
 		if !cacheresult {
 			bot.Unlock()
 			Bot.tryrestartorkill(5, false)
+			return true
 		}
 	} else {
 		fmt.Println("Cache disabled ... skiping")
 	}
-	fmt.Println("All done !")
+	
+	fmt.Println("Bot Starting ... 3 of 3 : DataBase connection init")
+	dbstatus := database.Connect()
+	if !dbstatus {
+		bot.Unlock()
+		Bot.tryrestartorkill(7, false)
+		return true
+	}
 	bot.Unlock()
+	fmt.Println("All done !")
 	return true
+}
+
+func (bot *BotStruct) Shutdown() {
+	bot.tryrestartorkill(0, true)
 }
 
 // restarter or killer
 func (bot *BotStruct) tryrestartorkill(code int, kill bool) {
 	if (kill) {
+		bot.session.Close()
 		fmt.Println("Bot killed nicely & peacefully")
 		os.Exit(code)
 	}
@@ -87,6 +102,7 @@ func (bot *BotStruct) connect() int {
 }
 
 
+
 // TODO : Fill the cache + cache memory management
 
 // 
@@ -111,10 +127,10 @@ func fillcacheprocess(pid int, list []*discordgo.Guild, client *BotStruct, wg *s
 }
 
 // DataSpliter
-func splitdata(list []*discordgo.Guild) [config.Chunk+1][]*discordgo.Guild{
+func splitdata(list []*discordgo.Guild) [config.Chunk][]*discordgo.Guild{
 	var listlen = len(list)
 	var part int = listlen/config.Chunk
-	var res [config.Chunk+1][]*discordgo.Guild
+	var res [config.Chunk][]*discordgo.Guild
 	for i, elem := range list {
 		res[i/part] = append(res[i/part], elem)
 	}

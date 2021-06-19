@@ -6,14 +6,24 @@ import (
 
 // DataBase config
 
+const DBenabled = true // change to false if you dont want to store data => changing to false will disable some bot fuction
 const DBhost = "" // leave blank for localhost
 const DBuser = "" // leave blank for none
 const DBpassword = "" // leave blank for none
 const DBdatabase = "bigopenworld-discordbot" // leave blank for default (bigopenworld-discordbot)
 
+// DataBase advanced config 
+
+const DBmultihosts = false // to use multiple hosts instead of one (disable "DBhost" the setting for one host only)
+var DBhosts  = []string{"host1", "host2"} // replace host1 and host2 with the correct value
+const DBInitialCap = 10 // how many connection should be created
+const DBMaxOpen = 20 // how many connection is allowed
+const DBMaxRetry = 3 // how many retry sould be attempt when a query fail
+const DBDiscoverHosts = false // should the database automatically connect new servers when they are added to the cluster
+
 // Discord config
 
-const Token = "" // enter the bot token
+const Token = "ODU1NTAyMTQ4ODIwMjcxMTA0.YMzadg.fyVimO0PjTE5BNbyJ9JbFS4zJV4" // enter the bot token
 
 // Bot settings 
 

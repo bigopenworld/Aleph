@@ -1,5 +1,34 @@
 package database
 
-import "gopkg.in/rethinkdb/rethinkdb-go.v6"
+import (
+	"github.com/bigopenworld/discord-bot/config"
+	"gopkg.in/rethinkdb/rethinkdb-go.v6"
+)
 
 var DBsession *rethinkdb.Session
+
+
+func Connect() bool {
+	var opt rethinkdb.ConnectOpts
+	switch config.DBmultihosts {
+	case true : 
+		opt = rethinkdb.ConnectOpts{
+			Addresses: config.DBhosts,
+			InitialCap: config.DBInitialCap,
+			MaxOpen: config.DBMaxOpen,
+			NumRetries: config.DBMaxRetry,
+			DiscoverHosts: config.DBDiscoverHosts,
+		}
+	case false : 
+		opt = rethinkdb.ConnectOpts{
+			Address: config.DBhost,
+			InitialCap: config.DBInitialCap,
+			MaxOpen: config.DBMaxOpen,
+			NumRetries: config.DBMaxRetry,
+			DiscoverHosts: config.DBDiscoverHosts,
+		}
+	}
+	session, err := rethinkdb.Connect(opt)
+	DBsession = session
+	return err == nil
+}
