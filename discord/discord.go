@@ -55,13 +55,18 @@ func (bot *BotStruct) start() bool {
 	}
 
 	fmt.Println("Bot Starting ... 3 of 3 : DataBase connection init")
-	dbstatus := database.Connect()
-	if !dbstatus {
-		fmt.Println("Bot Starting failed ... Unlocking Bot struct")
-		bot.Unlock()
-		bot.tryrestartorkill(7, false)
-		return true
+	if config.DBenabled {
+		dbstatus := database.Connect()
+		if !dbstatus {
+			fmt.Println("Bot Starting failed ... Unlocking Bot struct")
+			bot.Unlock()
+			bot.tryrestartorkill(7, false)
+			return true
+		}
+	} else {
+		fmt.Println("Database disabled ... skiping")
 	}
+	
 	fmt.Println("Bot Starting ... Unlocking Bot struct")
 	bot.Unlock()
 	fmt.Println("All done !")

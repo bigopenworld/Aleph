@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/allegro/bigcache/v3 v3.0.0
-	github.com/bwmarrin/discordgo v0.23.2
-	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/bwmarrin/discordgo v0.23.3-0.20210410202908-577e7dd4f6cc
 	gopkg.in/rethinkdb/rethinkdb-go.v6 v6.2.1
 )
