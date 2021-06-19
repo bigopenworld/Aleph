@@ -17,7 +17,7 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
-
+	discord.Bot.Shutdown()
 	// Cleanly close down the Discord session.
 	//dg.Close()
 }
