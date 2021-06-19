@@ -13,6 +13,8 @@ download the release from github, extract it
 
 edit `./config/config.go` fill the token and other missing settings 
 
+Note : Please set MaxGuildMem & MaxMemberMem & MaxConfigMem according to your system memory
+
 run `go build`
 
 run `./discord-bot`
