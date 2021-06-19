@@ -23,7 +23,7 @@ const DBDiscoverHosts = false // should the database automatically connect new s
 
 // Discord config
 
-const Token = "ODU1NTAyMTQ4ODIwMjcxMTA0.YMzadg.fyVimO0PjTE5BNbyJ9JbFS4zJV4" // enter the bot token
+const Token = "" // enter the bot token
 
 // Bot settings 
 
@@ -42,9 +42,11 @@ Seconds Minutes Hours Day-of-Month Month Day-of-week
 ex : "0 15 * * * *" run every 15 min 
 */
 
+/* this settings does nothing now maybe will be use for a next version
 const GuildCacheForceClean = "0 20 * * * *" // dont modify unless you know what you are doing 
 const UserCacheForceClean = "0 20 * * * *" // dont modify unless you know what you are doing 
 const ConfigCacheForceClean = "0 10 * * * *" // dont modify unless you know what you are doing 
+*/
 
 const GuildCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
 const MemberCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
@@ -57,6 +59,22 @@ const ConfigCacheClean = 5*time.Minute // dont modify unless you know what you a
 /* 
 By default this set is 1, increment if your bot take a long time to load data to the cache
 
-this setting define how many process are spawned to fill the cache
+this setting define how many process + 1 are spawned to fill the cache 
+
 */
-const Chunk = 1 
+const Chunk = 1
+
+/* 
+Memory management settings 
+
+Warning : setting this value too high can crash your system
+Warning : setting this to 0 disable memory management => Use with caution
+*/
+
+const MaxGuildMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
+const MaxMemberMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
+const MaxConfigMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
+
+const GuildMemCompression = true // chose to enable or disable cache compression
+const MemberMemCompression = true // chose to enable or disable cache compression
+const ConfigMemCompression = true // chose to enable or disable cache compression
