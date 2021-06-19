@@ -15,7 +15,7 @@ const DBdatabase = "bigopenworld-discordbot" // leave blank for default (bigopen
 // DataBase advanced config 
 
 const DBmultihosts = false // to use multiple hosts instead of one (disable "DBhost" the setting for one host only)
-var DBhosts  = []string{"host1", "host2"} // replace host1 and host2 with the correct value
+var DBhosts = []string{"host1", "host2"} // replace host1 and host2 with the correct value
 const DBInitialCap = 10 // how many connection should be created
 const DBMaxOpen = 20 // how many connection is allowed
 const DBMaxRetry = 3 // how many retry sould be attempt when a query fail
