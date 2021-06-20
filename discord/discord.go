@@ -8,6 +8,7 @@ import (
 
 	"github.com/bigopenworld/discord-bot/config"
 	"github.com/bigopenworld/discord-bot/database"
+	"github.com/bigopenworld/discord-bot/discordevent"
 	"github.com/bigopenworld/discord-bot/structure"
 	"github.com/bwmarrin/discordgo"
 )
@@ -112,6 +113,11 @@ func (bot *BotStruct) connect() int {
 	}
 	bot.session = discord
 	bot.session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
+	// Handlers 
+	discord.AddHandler(discordevent.MessageCreate)
+
+	// End Handlers
+
 	err = bot.session.Open()
 	if err != nil {
 		return 4

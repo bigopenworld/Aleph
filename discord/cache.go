@@ -41,7 +41,7 @@ func (botcache *BotCache) init() bool {
 	GuildCacheConfig := bigcache.Config {
 		Shards: 1024,
 		LifeWindow: config.GuildCacheExp,
-		CleanWindow: config.ConfigCacheClean,
+		CleanWindow: config.GuildCacheClean,
 		MaxEntriesInWindow: 1000 * 10 * 60,
 		MaxEntrySize: 500,
 		Verbose: false,
@@ -59,8 +59,8 @@ func (botcache *BotCache) init() bool {
 	println("Init cache ... 2 of 3 : MemberCache")
 	MemberCacheConfig := bigcache.Config {
 		Shards: 1024,
-		LifeWindow: config.GuildCacheExp,
-		CleanWindow: config.ConfigCacheClean,
+		LifeWindow: config.MemberCacheExp,
+		CleanWindow: config.MemberCacheClean,
 		MaxEntriesInWindow: 1000 * 10 * 60,
 		MaxEntrySize: 500,
 		Verbose: false,
@@ -74,24 +74,7 @@ func (botcache *BotCache) init() bool {
 	}
 	botcache.MemberCache = MemberCache
 
-	// Config cache init
-	println("Init cache ... 3 of 3 : ConfigCache")
-	ConfigCacheConfig := bigcache.Config {
-		Shards: 1024,
-		LifeWindow: config.GuildCacheExp,
-		CleanWindow: config.ConfigCacheClean,
-		MaxEntriesInWindow: 1000 * 10 * 60,
-		MaxEntrySize: 500,
-		Verbose: false,
-		HardMaxCacheSize: config.MaxConfigMem,
-		OnRemove: nil,
-		OnRemoveWithReason: nil,
-	}
-	ConfigCache, initErrConfigCache := bigcache.NewBigCache(ConfigCacheConfig)
-	if initErrConfigCache != nil {
-		return false
-	}
-	botcache.ConfigCache = ConfigCache
+	
 	println("Init cache ... Unlocking cache struct")
 	botcache.UnlockAllCache()
 	println("All Cache init done !")
@@ -119,13 +102,6 @@ func (botcache *BotCache) SetMember(memberobj structure.Member) {
 	}
 	botcache.MemberCache.Set(memberobj.ID, bytes)
 }
-func (botcache *BotCache) SetConfig(configobj structure.Config) {
-	bytes := data.EncodeToBytes(configobj)
-	if config.ConfigMemCompression {
-		bytes = data.Compress(bytes)
-	}
-	botcache.ConfigCache.Set(configobj.ID, bytes)
-}
 
 /// Read
 
@@ -148,14 +124,4 @@ func (BotCache *BotCache) GetMember(id string) (bool, structure.Member){
 		bytes = data.Decompress(bytes)
 	}
 	return true, data.DecodeToMember(bytes)
-}
-func (BotCache *BotCache) GetConfig(id string) (bool, structure.Config){
-	bytes, err := BotCache.ConfigCache.Get(id)
-	if err != nil {
-		return false, structure.Config{}
-	}
-	if config.ConfigMemCompression {
-		bytes = data.Decompress(bytes)
-	}
-	return true, data.DecodeToConfig(bytes)
 }
