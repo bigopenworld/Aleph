@@ -18,6 +18,8 @@ func Connect() bool {
 			MaxOpen: config.DBMaxOpen,
 			NumRetries: config.DBMaxRetry,
 			DiscoverHosts: config.DBDiscoverHosts,
+			Username: config.DBuser,
+			Password: config.DBpassword,
 		}
 	case false : 
 		opt = rethinkdb.ConnectOpts{
@@ -26,9 +28,15 @@ func Connect() bool {
 			MaxOpen: config.DBMaxOpen,
 			NumRetries: config.DBMaxRetry,
 			DiscoverHosts: config.DBDiscoverHosts,
+			Username: config.DBuser,
+			Password: config.DBpassword,
 		}
 	}
 	session, err := rethinkdb.Connect(opt)
 	DBsession = session
+	return err == nil
+}
+func Test() bool {
+	_, err := rethinkdb.Expr("Hello World").Run(DBsession)
 	return err == nil
 }

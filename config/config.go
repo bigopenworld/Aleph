@@ -10,8 +10,9 @@ const DBenabled = true // change to false if you dont want to store data => chan
 const DBhost = "" // leave blank for localhost
 const DBuser = "" // leave blank for none
 const DBpassword = "" // leave blank for none
-const DBdatabase = "bigopenworld-discordbot" // leave blank for default (bigopenworld-discordbot)
-
+const DBdatabase = "bigopenworld-discordbot" // leave for default (bigopenworld-discordbot)
+const DBusertable = "users"// where to store user
+const DBguildtable = "guild"
 // DataBase advanced config 
 
 const DBmultihosts = false // to use multiple hosts instead of one (disable "DBhost" the setting for one host only)
@@ -23,10 +24,11 @@ const DBDiscoverHosts = false // should the database automatically connect new s
 
 // Discord config
 
-const Token = "" // enter the bot token
+const Token = "ODU1NTAyMTQ4ODIwMjcxMTA0.YMzadg.ld5TRlSnmnokduGIw5A_V_Fpygc" // enter the bot token
 
 // Bot settings 
 
+const Prefix = ">" // the default prefix of the bot
 const Cache = true // true = cache enabled / false = cache disabled
 const MaxRestart = 5 // how many restart are authorized before killing the process
 const RestartReset = true // If the bot have sucessufly started do we resset restart cont to 0
@@ -45,16 +47,13 @@ ex : "0 15 * * * *" run every 15 min
 /* this settings does nothing now maybe will be use for a next version
 const GuildCacheForceClean = "0 20 * * * *" // dont modify unless you know what you are doing 
 const UserCacheForceClean = "0 20 * * * *" // dont modify unless you know what you are doing 
-const ConfigCacheForceClean = "0 10 * * * *" // dont modify unless you know what you are doing 
 */
 
 const GuildCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
 const MemberCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
-const ConfigCacheExp = 5*time.Minute // dont modify unless you know what you are doing 
 
 const GuildCacheClean = 10*time.Minute // dont modify unless you know what you are doing 
 const MemberCacheClean = 10*time.Minute // dont modify unless you know what you are doing 
-const ConfigCacheClean = 5*time.Minute // dont modify unless you know what you are doing 
 
 /* 
 By default this set is 1, increment if your bot take a long time to load data to the cache
@@ -73,8 +72,6 @@ Warning : setting this to 0 disable memory management => Use with caution
 
 const MaxGuildMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
 const MaxMemberMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
-const MaxConfigMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
 
 const GuildMemCompression = true // chose to enable or disable cache compression
 const MemberMemCompression = true // chose to enable or disable cache compression
-const ConfigMemCompression = true // chose to enable or disable cache compression
