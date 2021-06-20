@@ -89,39 +89,52 @@ func (botcache *BotCache) init() bool {
 //// Write 
 
 func (botcache *BotCache) SetGuild(guildobj structure.Guild) {
-	bytes := data.EncodeToBytes(guildobj)
-	if config.GuildMemCompression {
-		bytes = data.Compress(bytes)
+	if config.Cache {
+		bytes := data.EncodeToBytes(guildobj)
+		if config.GuildMemCompression {
+			bytes = data.Compress(bytes)
+		}
+		botcache.GuildCache.Set(guildobj.ID, bytes)
 	}
-	botcache.GuildCache.Set(guildobj.ID, bytes)
 }
 func (botcache *BotCache) SetMember(memberobj structure.Member) {
-	bytes := data.EncodeToBytes(memberobj)
-	if config.MemberMemCompression {
-		bytes = data.Compress(bytes)
+	if config.Cache {
+		bytes := data.EncodeToBytes(memberobj)
+		if config.MemberMemCompression {
+			bytes = data.Compress(bytes)
+		}
+		botcache.MemberCache.Set(memberobj.ID, bytes)
 	}
-	botcache.MemberCache.Set(memberobj.ID, bytes)
+
 }
 
 /// Read
 
 func (BotCache *BotCache) GetGuild(id string) (bool, structure.Guild){
-	bytes, err := BotCache.GuildCache.Get(id)
-	if err != nil {
+	if config.Cache {
+		bytes, err := BotCache.GuildCache.Get(id)
+		if err != nil {
+			return false, structure.Guild{}
+		}
+		if config.GuildMemCompression {
+			bytes = data.Decompress(bytes)
+		}
+		return true, data.DecodeToGuild(bytes)
+	} else {
 		return false, structure.Guild{}
 	}
-	if config.GuildMemCompression {
-		bytes = data.Decompress(bytes)
-	}
-	return true, data.DecodeToGuild(bytes)
 }
 func (BotCache *BotCache) GetMember(id string) (bool, structure.Member){
-	bytes, err := BotCache.MemberCache.Get(id)
-	if err != nil {
+	if config.Cache {
+		bytes, err := BotCache.MemberCache.Get(id)
+		if err != nil {
+			return false, structure.Member{}
+		}
+		if config.MemberMemCompression {
+			bytes = data.Decompress(bytes)
+		}
+		return true, data.DecodeToMember(bytes)
+	} else {
 		return false, structure.Member{}
 	}
-	if config.MemberMemCompression {
-		bytes = data.Decompress(bytes)
-	}
-	return true, data.DecodeToMember(bytes)
 }
