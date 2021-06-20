@@ -10,8 +10,8 @@ const DBenabled = true // change to false if you dont want to store data => chan
 const DBhost = "" // leave blank for localhost
 const DBuser = "" // leave blank for none
 const DBpassword = "" // leave blank for none
-const DBdatabase = "bigopenworld-discordbot" // leave blank for default (bigopenworld-discordbot)
-
+const DBdatabase = "bigopenworld-discordbot" // leave for default (bigopenworld-discordbot)
+const DBusertable = "users"
 // DataBase advanced config 
 
 const DBmultihosts = false // to use multiple hosts instead of one (disable "DBhost" the setting for one host only)
