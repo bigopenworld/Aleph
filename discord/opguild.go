@@ -31,7 +31,7 @@ func GuildExist(guild structure.Guild) (bool, error) {
 
 
 	if err != nil {
-		return true, errors.New("Unknow DB error")
+		return true, errors.New("unknow db error")
 	}
 
 	var doc int

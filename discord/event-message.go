@@ -1,6 +1,8 @@
 package discord
 
 import (
+	"log"
+
 	"github.com/bigopenworld/discord-bot/config"
 	"github.com/bigopenworld/discord-bot/lang"
 	"github.com/bigopenworld/discord-bot/structure"
@@ -16,7 +18,8 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	guildobj := structure.NewGuild()
 	guildobj.ID = m.GuildID
 	status := GuildCreate(*guildobj)
-	if status == false {
+	if !status {
+		log.Printf("Error : Guild OP Failled")
 		// add log
 	}
 	if m.Author.ID == s.State.User.ID {
@@ -26,8 +29,7 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var perm bool = false
 	switch m.Content {
 	case prefix + "ping" : {
-		var cmd Cmd
-		cmd = &ping{}
+		var cmd Cmd = &ping{}
 		if !cmd.checkperm(s, m) {
 			perm = true 
 			break
