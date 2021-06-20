@@ -32,3 +32,7 @@ func Connect() bool {
 	DBsession = session
 	return err == nil
 }
+func Test() bool {
+	_, err := rethinkdb.Expr("Hello World").Run(DBsession)
+	return err == nil
+}

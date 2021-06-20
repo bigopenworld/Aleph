@@ -63,6 +63,13 @@ func (bot *BotStruct) start() bool {
 			bot.tryrestartorkill(7, false)
 			return true
 		}
+		dbcheck := database.Test()
+		if !dbcheck {
+			fmt.Println("Bot Starting failed ... Unlocking Bot struct")
+			bot.Unlock()
+			bot.tryrestartorkill(7, false)
+			return true
+		}
 	} else {
 		fmt.Println("Database disabled ... skiping")
 	}
