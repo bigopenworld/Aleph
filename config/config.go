@@ -28,6 +28,7 @@ const Token = "ODU1NTAyMTQ4ODIwMjcxMTA0.YMzadg.ld5TRlSnmnokduGIw5A_V_Fpygc" // e
 
 // Bot settings 
 
+const Prefix = ">" // the default prefix of the bot
 const Cache = true // true = cache enabled / false = cache disabled
 const MaxRestart = 5 // how many restart are authorized before killing the process
 const RestartReset = true // If the bot have sucessufly started do we resset restart cont to 0
