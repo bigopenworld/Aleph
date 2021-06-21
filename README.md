@@ -41,4 +41,4 @@ exit code 7 => DataBase connection error
 
 ---
 
-[Discord] (https://discord.gg/)
+[Discord](https://discord.gg/)
