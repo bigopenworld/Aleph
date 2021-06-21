@@ -38,3 +38,7 @@ exit code 7 => DataBase connection error
 ## CMD that exist :
 
 > Ping => Return the bot latency
+
+---
+
+[Discord] (https://discord.gg/)
