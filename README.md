@@ -41,4 +41,4 @@ exit code 7 => DataBase connection error
 
 ---
 
-[Discord](https://discord.gg/)
+📎 [Discord Of **BigOpenWorld**](https://discord.gg/5ANNtNgZNk)
