@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/allegro/bigcache/v3"
+	"github.com/bigopenworld/discord-bot/cmd"
 	"github.com/bigopenworld/discord-bot/config"
 	"github.com/bigopenworld/discord-bot/data"
 	"github.com/bigopenworld/discord-bot/structure"
@@ -33,11 +34,11 @@ func (botcache *BotCache) UnlockAllCache() bool {
 
 
 func (botcache *BotCache) init() bool {
-	println("Init cache ... Locking cache struct")
+	println(cmd.NewFlag(cmd.OK),"Init cache ... Locking cache struct")
 	botcache.LockAllCache()
 
 	// Guild cache init
-	println("Init cache ... 1 of 3 : GuildCache")
+	println(cmd.NewFlag(cmd.OK),"Init cache ... 1 of 3 : GuildCache")
 	GuildCacheConfig := bigcache.Config {
 		Shards: 1024,
 		LifeWindow: config.GuildCacheExp,
@@ -56,7 +57,7 @@ func (botcache *BotCache) init() bool {
 	botcache.GuildCache = GuildCache
 
 	// Member cache init
-	println("Init cache ... 2 of 3 : MemberCache")
+	println(cmd.NewFlag(cmd.OK),"Init cache ... 2 of 3 : MemberCache")
 	MemberCacheConfig := bigcache.Config {
 		Shards: 1024,
 		LifeWindow: config.MemberCacheExp,
@@ -75,9 +76,9 @@ func (botcache *BotCache) init() bool {
 	botcache.MemberCache = MemberCache
 
 	
-	println("Init cache ... Unlocking cache struct")
+	println(cmd.NewFlag(cmd.OK),"Init cache ... Unlocking cache struct")
 	botcache.UnlockAllCache()
-	println("All Cache init done !")
+	println(cmd.NewFlag(cmd.SUCCESS),"All Cache init done !")
 	return true
 }
 
