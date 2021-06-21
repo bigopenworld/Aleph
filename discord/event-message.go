@@ -15,8 +15,7 @@ type Cmd interface {
 }
 
 func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	guildobj := structure.NewGuild()
-	guildobj.ID = m.GuildID
+	guildobj := structure.NewGuild(m.GuildID)
 	status := GuildCreate(*guildobj)
 	if !status {
 		log.Printf("Error : Guild OP Failled")
