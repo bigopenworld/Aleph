@@ -37,19 +37,6 @@ const RestartWait = 10*time.Second // How many time we wait before a new restart
 
 // Bot cache settings (disabled if cache disabled)  
 
-/*
-Cron settings 
-
-Seconds Minutes Hours Day-of-Month Month Day-of-week 
-
-ex : "0 15 * * * *" run every 15 min 
-*/
-
-/* this settings does nothing now maybe will be use for a next version
-const GuildCacheForceClean = "0 20 * * * *" // dont modify unless you know what you are doing 
-const UserCacheForceClean = "0 20 * * * *" // dont modify unless you know what you are doing 
-*/
-
 const GuildCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
 const MemberCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
 

@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/bigopenworld/discord-bot/cmd"
 	"github.com/bigopenworld/discord-bot/config"
 	"github.com/bigopenworld/discord-bot/database"
 	"github.com/bigopenworld/discord-bot/structure"
@@ -30,54 +31,57 @@ func CreateAndStart() bool {
 
 // start func
 func (bot *BotStruct) start() bool {
-	fmt.Println("Bot Starting ... Locking Bot struct")
+	fmt.Println(cmd.NewFlag(cmd.OK), "Bot Starting ... Locking Bot struct")
 	bot.Lock()
-	fmt.Println("Bot Starting ... 1 of 3 : Bot init and connection")
+	fmt.Println(cmd.NewFlag(cmd.OK),"Bot Starting ... 1 of 3 : Bot init and connection")
 	err := bot.connect()
 	if err != 0 {
-		fmt.Println("Bot Starting failed ... Unlocking Bot struct")
+		fmt.Println(cmd.NewFlag(cmd.FATAL),"Bot Starting failed ... Unlocking Bot struct")
 		bot.Unlock()
 		bot.tryrestartorkill(err, false)
 		return true
 	}
-	fmt.Println("Bot Starting ... 2 of 3 : Bot cache starting")
+	fmt.Println(cmd.NewFlag(cmd.OK),"Bot Starting ... 2 of 3 : Bot cache starting")
 	if config.Cache {
 		bot.cache = NewBotCache()
 		cacheresult := bot.cache.init()
 		if !cacheresult {
-			fmt.Println("Bot Starting failed ... Unlocking Bot struct")
+			fmt.Println(cmd.NewFlag(cmd.FATAL),"Bot Starting failed ... Unlocking Bot struct")
 			bot.Unlock()	
 			bot.tryrestartorkill(5, false)
 			return true
 		}
 	} else {
-		fmt.Println("Cache disabled ... skiping")
+		fmt.Println(cmd.NewFlag(cmd.WARNING),"Cache disabled ... skiping")
 	}
 
-	fmt.Println("Bot Starting ... 3 of 3 : DataBase connection init")
+	fmt.Println(cmd.NewFlag(cmd.OK),"Bot Starting ... 3 of 3 : DataBase connection init")
 	if config.DBenabled {
 		dbstatus := database.Connect()
 		if !dbstatus {
-			fmt.Println("Bot Starting failed ... Unlocking Bot struct")
+			fmt.Println(cmd.NewFlag(cmd.FATAL),"Bot Starting failed ... Unlocking Bot struct")
 			bot.Unlock()
 			bot.tryrestartorkill(7, false)
 			return true
 		}
 		dbcheck := database.Test()
 		if !dbcheck {
-			fmt.Println("Bot Starting failed ... Unlocking Bot struct")
+			fmt.Println(cmd.NewFlag(cmd.FATAL),"Bot Starting failed ... Unlocking Bot struct")
 			bot.Unlock()
 			bot.tryrestartorkill(7, false)
 			return true
 		}
 	} else {
-		fmt.Println("Database disabled ... skiping")
+		fmt.Println(cmd.NewFlag(cmd.WARNING),"Database disabled ... skiping")
 	}
 	
-	fmt.Println("Bot Starting ... Unlocking Bot struct")
+	fmt.Println(cmd.NewFlag(cmd.INFO),"Bot Starting ... Unlocking Bot struct")
 	bot.Unlock()
-	fmt.Println("All done !")
+	fmt.Println(cmd.NewFlag(cmd.SUCCESS),"All done !")
 	bot.fillcache()
+	if config.RestartReset {
+		bot.restarted = 0
+	}
 	return true
 }
 
@@ -89,11 +93,11 @@ func (bot *BotStruct) Shutdown() {
 func (bot *BotStruct) tryrestartorkill(code int, kill bool) {
 	if kill {
 		bot.session.Close()
-		fmt.Println("Bot killed nicely & peacefully")
+		fmt.Println(cmd.NewFlag(cmd.SUCCESS),"Bot killed nicely & peacefully")
 		os.Exit(code)
 	}
 	bot.restarted++
-	fmt.Println("Bot Error Occured ... Restart ", bot.restarted, " of ", config.MaxRestart)
+	fmt.Println(cmd.NewFlag(cmd.ERROR),"Bot Error Occured ... Restart ", bot.restarted, " of ", config.MaxRestart)
 	if bot.restarted < config.MaxRestart {
 		bot.session.Close()
 		time.Sleep(config.RestartWait)
@@ -139,7 +143,7 @@ func (bot *BotStruct) GetCache() *BotCache {
 func (bot *BotStruct) fillcache() bool {
 	
 	bot.Lock()
-	fmt.Println("Init 1 of 1 ... Filling cache")
+	fmt.Println(cmd.NewFlag(cmd.OK),"Init 1 of 1 ... Filling cache")
 
 	listoftest := splitdata(bot.session.State.Guilds)
 	var wg sync.WaitGroup
@@ -148,7 +152,7 @@ func (bot *BotStruct) fillcache() bool {
 		go fillcacheprocess(pid, list, bot, &wg)
 	}
 	wg.Wait()
-	fmt.Println("Init Done ... All done")
+	fmt.Println(cmd.NewFlag(cmd.SUCCESS),"Init Done ... All done")
 	bot.Unlock()
 
 	//client.session.State.RUnlock()
@@ -179,7 +183,7 @@ func fillcacheprocess(pid int, list []*discordgo.Guild, client *BotStruct, wg *s
 		//log.Println("Process",pid ," : guild ", done, " / ",total)
 
 	}
-	fmt.Println("Process", pid, " : guild ", done, " / ", total)
+	fmt.Println(cmd.NewFlag(cmd.INFO),"Process", pid, " : guild ", done, " / ", total)
 }
 
 // DataSpliter
