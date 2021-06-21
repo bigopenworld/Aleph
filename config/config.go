@@ -12,7 +12,8 @@ const DBuser = "" // leave blank for none
 const DBpassword = "" // leave blank for none
 const DBdatabase = "bigopenworld-discordbot" // leave for default (bigopenworld-discordbot)
 const DBusertable = "users"// where to store user
-const DBguildtable = "guild"
+const DBguildtable = "guild" // where to store guild
+
 // DataBase advanced config 
 
 const DBmultihosts = false // to use multiple hosts instead of one (disable "DBhost" the setting for one host only)
@@ -24,7 +25,7 @@ const DBDiscoverHosts = false // should the database automatically connect new s
 
 // Discord config
 
-const Token = "ODU1NTAyMTQ4ODIwMjcxMTA0.YMzadg.ld5TRlSnmnokduGIw5A_V_Fpygc" // enter the bot token
+const Token = "" // enter the bot token
 
 // Bot settings 
 
