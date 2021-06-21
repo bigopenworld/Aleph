@@ -1,4 +1,4 @@
-# Discord Bot (golang)
+# Aleph (golang)
 
 ## Requirements : 
 
