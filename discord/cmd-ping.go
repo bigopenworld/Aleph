@@ -9,6 +9,11 @@ import (
 
 type ping struct {
 	minimumperm int
+	cooldown int
+}
+func (c *ping) props() {
+	c.minimumperm = discordgo.PermissionSendMessages
+	c.cooldown = 0
 }
 func (c *ping) checkperm(s *discordgo.Session, m *discordgo.MessageCreate) bool {
 	return m.Member.Permissions&int64(c.minimumperm) == int64(c.minimumperm) 

@@ -59,7 +59,23 @@ Warning : setting this to 0 disable memory management => Use with caution
 */
 
 const MaxGuildMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
-const MaxMemberMem = 1024 // Value in MB => 1024 = 1 GB of Ram 
+const MaxMemberMem = 1024 // Value in MB => 1024 = 1 GB of Ram
+const LCooldownMem = 1024 // Value in MB => 1024 = 1 GB of Ram  => This set the low Cooldown memory cache (for no-spam cooldown)
+const HCooldownMem = 1024 // Value in MB => 1024 = 1 GB of Ram  => This set the high Cooldown memory cache (for cooldown like RP cmd cooldown)
 
 const GuildMemCompression = true // chose to enable or disable cache compression
 const MemberMemCompression = true // chose to enable or disable cache compression
+const LCooldownCompression = true // chose to enable or disable cache compression
+const HCooldownCompression = true // chose to enable or disable cache compression 
+
+
+/*
+Cooldown settings
+
+*/
+
+const LCooldownDB = false
+const HCooldownDB = true 
+
+const LCooldownCache = true
+const HCooldownCache = true
