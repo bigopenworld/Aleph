@@ -10,6 +10,7 @@ import (
 )
 
 type Cmd interface {
+	props(s *discordgo.Session, m *discordgo.MessageCreate)
 	checkperm(s *discordgo.Session, m *discordgo.MessageCreate) bool
 	run(s *discordgo.Session, m *discordgo.MessageCreate)
 }
@@ -29,6 +30,7 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	switch m.Content {
 	case prefix + "ping" : {
 		var cmd Cmd = &ping{}
+		cmd.props(s,m)
 		if !cmd.checkperm(s, m) {
 			perm = true 
 			break
