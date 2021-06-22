@@ -44,8 +44,17 @@ func (bot *BotStruct) start() bool {
 	fmt.Println(cmd.NewFlag(cmd.OK),"Bot Starting ... 2 of 3 : Bot cache starting")
 	if config.Cache {
 		bot.cache = NewBotCache()
-		cacheresult := bot.cache.init()
-		if !cacheresult {
+		fmt.Println(cmd.NewFlag(cmd.OK),"Bot Starting ... 1 of 2 : Internal cache starting")
+		internalcacheresult := bot.cache.init()
+		if !internalcacheresult {
+			fmt.Println(cmd.NewFlag(cmd.FATAL),"Bot Starting failed ... Unlocking Bot struct")
+			bot.Unlock()	
+			bot.tryrestartorkill(5, false)
+			return true
+		}
+		fmt.Println(cmd.NewFlag(cmd.OK),"Bot Starting ... 2 of 2 : Cooldown cache starting")
+		cooldowncacheresult := bot.cache.initcooldown()
+		if !cooldowncacheresult {
 			fmt.Println(cmd.NewFlag(cmd.FATAL),"Bot Starting failed ... Unlocking Bot struct")
 			bot.Unlock()	
 			bot.tryrestartorkill(5, false)
@@ -158,8 +167,6 @@ func (bot *BotStruct) fillcache() bool {
 	//client.session.State.RUnlock()
 	return true
 }
-
-// TODO : Fill the cache + cache memory management
 
 //
 func fillcacheprocess(pid int, list []*discordgo.Guild, client *BotStruct, wg *sync.WaitGroup) {

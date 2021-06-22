@@ -1,7 +1,9 @@
 package discord
 
 import (
+	"fmt"
 	"sync"
+	"time"
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/bigopenworld/discord-bot/cmd"
@@ -16,6 +18,8 @@ type BotCache struct {
 	GuildCache *bigcache.BigCache
 	MemberCache *bigcache.BigCache
 	ConfigCache *bigcache.BigCache
+	Lcooldown *bigcache.BigCache
+	Hcooldown *bigcache.BigCache
 }
 func NewBotCache() BotCache {
 	return BotCache{}
@@ -38,7 +42,7 @@ func (botcache *BotCache) init() bool {
 	botcache.LockAllCache()
 
 	// Guild cache init
-	println(cmd.NewFlag(cmd.OK),"Init cache ... 1 of 3 : GuildCache")
+	println(cmd.NewFlag(cmd.OK),"Init cache ... 1 of 2 : GuildCache")
 	GuildCacheConfig := bigcache.Config {
 		Shards: 1024,
 		LifeWindow: config.GuildCacheExp,
@@ -57,7 +61,7 @@ func (botcache *BotCache) init() bool {
 	botcache.GuildCache = GuildCache
 
 	// Member cache init
-	println(cmd.NewFlag(cmd.OK),"Init cache ... 2 of 3 : MemberCache")
+	println(cmd.NewFlag(cmd.OK),"Init cache ... 2 of 2 : MemberCache")
 	MemberCacheConfig := bigcache.Config {
 		Shards: 1024,
 		LifeWindow: config.MemberCacheExp,
@@ -81,6 +85,63 @@ func (botcache *BotCache) init() bool {
 	println(cmd.NewFlag(cmd.SUCCESS),"All Cache init done !")
 	return true
 }
+func (botcache *BotCache) initcooldown() bool {
+	println(cmd.NewFlag(cmd.OK),"Init cooldown cache ... Locking cache struct")
+	botcache.LockAllCache()
+
+	// Lcooldown cache init
+	println(cmd.NewFlag(cmd.OK),"Init cache ... 1 of 2 : Lcooldown")
+	if config.LCooldownCache {
+		Lcooldownconfig := bigcache.Config {
+			Shards: 1024,
+			LifeWindow: config.LCacheExp,
+			CleanWindow: config.LCacheClean,
+			MaxEntriesInWindow: 1000 * 10 * 60,
+			MaxEntrySize: 500,
+			Verbose: false,
+			HardMaxCacheSize: config.LCooldownMem,
+			OnRemove: nil,
+			OnRemoveWithReason: nil,
+		}
+		LcooldownCache, initErrGuildCache := bigcache.NewBigCache(Lcooldownconfig)
+		if initErrGuildCache != nil {
+			return false
+		}
+		botcache.Lcooldown = LcooldownCache
+	} else {
+		fmt.Println(cmd.NewFlag(cmd.WARNING),"Lcooldown Cache disabled ... skiping")
+	}
+
+
+	// Hcooldown cache init
+	println(cmd.NewFlag(cmd.OK),"Init cache ... 2 of 2 : Hcooldown")
+	if config.HCooldownCache {
+		Hcooldownconfig := bigcache.Config {
+			Shards: 1024,
+			LifeWindow: config.MemberCacheExp,
+			CleanWindow: config.MemberCacheClean,
+			MaxEntriesInWindow: 1000 * 10 * 60,
+			MaxEntrySize: 500,
+			Verbose: false,
+			HardMaxCacheSize: config.HCooldownMem,
+			OnRemove: nil,
+			OnRemoveWithReason: nil,
+		}
+		HcooldownCache, initErrMemberCache := bigcache.NewBigCache(Hcooldownconfig)
+		if initErrMemberCache != nil {
+			return false
+		}
+		botcache.Hcooldown = HcooldownCache
+	} else {
+		fmt.Println(cmd.NewFlag(cmd.WARNING),"Hcooldown Cache disabled ... skiping")
+	}
+	
+	println(cmd.NewFlag(cmd.OK),"Init cache ... Unlocking cache struct")
+	botcache.UnlockAllCache()
+	println(cmd.NewFlag(cmd.SUCCESS),"All Cache init done !")
+	return true
+}
+
 
 
 
@@ -108,6 +169,28 @@ func (botcache *BotCache) SetMember(memberobj structure.Member) {
 	}
 
 }
+func (botcache *BotCache) SetHcool(memberobj structure.Member,cooldowncmd string, t time.Time) {
+	if config.HCooldownCache {
+		bytes := data.EncodeToBytes(t)
+		if config.HCooldownCompression {
+			bytes = data.Compress(bytes)
+		}
+		botcache.MemberCache.Set(memberobj.ID+cooldowncmd, bytes)
+	}
+}
+func (botcache *BotCache) SetLcool(memberobj structure.Member,cooldowncmd string, t time.Time) {
+	if config.LCooldownCache {
+		bytes := data.EncodeToBytes(t)
+		if config.LCooldownCompression {
+			bytes = data.Compress(bytes)
+		}
+		err := botcache.Lcooldown.Set(memberobj.ID+cooldowncmd, bytes)
+		if err != nil {
+			println("error when writing cache")
+		}
+	}
+}
+
 
 /// Read
 
@@ -137,5 +220,34 @@ func (BotCache *BotCache) GetMember(id string) (bool, structure.Member){
 		return true, data.DecodeToMember(bytes)
 	} else {
 		return false, structure.Member{}
+	}
+}
+func (BotCache *BotCache) GetLcooldown(id string, cooldowncmd string) (bool, time.Time){
+	if config.LCooldownCache {
+		bytes, err := BotCache.Lcooldown.Get(id+cooldowncmd)
+		if err != nil {
+			println(err.Error())
+			return false, time.Time{}
+		}
+		if config.MemberMemCompression {
+			bytes = data.Decompress(bytes)
+		}
+		return true, data.DecodeToCooldown(bytes)
+	} else {
+		return false, time.Time{}
+	}
+}
+func (BotCache *BotCache) GetHcooldown(id string, cooldowncmd string) (bool, time.Time){
+	if config.HCooldownCache {
+		bytes, err := BotCache.Hcooldown.Get(id+cooldowncmd)
+		if err != nil {
+			return false, time.Time{}
+		}
+		if config.MemberMemCompression {
+			bytes = data.Decompress(bytes)
+		}
+		return true, data.DecodeToCooldown(bytes)
+	} else {
+		return false, time.Time{}
 	}
 }

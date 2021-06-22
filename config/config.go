@@ -13,7 +13,7 @@ const DBpassword = "" // leave blank for none
 const DBdatabase = "bigopenworld-discordbot" // leave for default (bigopenworld-discordbot)
 const DBusertable = "users"// where to store user
 const DBguildtable = "guild" // where to store guild
-
+const DBcooldowntable = "cooldown"
 // DataBase advanced config 
 
 const DBmultihosts = false // to use multiple hosts instead of one (disable "DBhost" the setting for one host only)
@@ -25,7 +25,7 @@ const DBDiscoverHosts = false // should the database automatically connect new s
 
 // Discord config
 
-const Token = "" // enter the bot token
+const Token = "ODU1NTAyMTQ4ODIwMjcxMTA0.YMzadg.Yc8nFzC9m6WfD8XSI6x0kAbtmuY" // enter the bot token
 
 // Bot settings 
 
@@ -74,8 +74,14 @@ Cooldown settings
 
 */
 
-const LCooldownDB = false
-const HCooldownDB = true 
+const LCooldownDB = true
+const HCooldownDB = true
 
 const LCooldownCache = true
 const HCooldownCache = true
+
+const LCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
+const HCacheExp = 10*time.Minute // dont modify unless you know what you are doing 
+
+const LCacheClean = 10*time.Minute // dont modify unless you know what you are doing 
+const HCacheClean = 10*time.Minute // dont modify unless you know what you are doing 
