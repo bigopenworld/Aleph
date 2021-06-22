@@ -5,5 +5,5 @@ import "github.com/bwmarrin/discordgo"
 
 type Member struct {
 	ID string
-	DiscMember discordgo.Member
+	DiscMember discordgo.User
 }
