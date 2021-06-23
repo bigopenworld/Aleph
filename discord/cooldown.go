@@ -12,13 +12,6 @@ import (
 	"github.com/bigopenworld/discord-bot/structure"
 	"gopkg.in/rethinkdb/rethinkdb-go.v6"
 )
-type Test struct {
-	ping string
-}
-type Cooldown struct {
-	id string
-	data map[string]string
-}
 
 // Exp is in sec => true cooldown active / false cooldown expired
 func LCooldownGet(user structure.Member, command string, exp time.Duration) (bool, error){
@@ -44,7 +37,7 @@ func LCooldownGet(user structure.Member, command string, exp time.Duration) (boo
 		}
 		t, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
-			return false, errors.New("Error in string conv")
+			return false, errors.New("error in string conv")
 		}
 		timeparsed := time.Unix(t, 0)
 		if ( timeparsed.Add(exp).Unix()  > time.Now().Unix() ) {
@@ -81,7 +74,7 @@ func HCooldownGet(user structure.Member, command string, exp time.Duration) (boo
 		}
 		t, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
-			return false, errors.New("Error in string conv")
+			return false, errors.New("error in string conv")
 		}
 		timeparsed := time.Unix(t, 0)
 		if ( timeparsed.Add(exp).Unix()  > time.Now().Unix() ) {
