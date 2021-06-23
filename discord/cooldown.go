@@ -21,8 +21,8 @@ type Cooldown struct {
 }
 
 // Exp is in sec => true cooldown active / false cooldown expired
-func LCooldownGet(user structure.Member, cmd string, exp time.Duration) (bool, error){
-	valid, res := BotVar.GetCache().GetLcooldown(user.ID, cmd)
+func LCooldownGet(user structure.Member, command string, exp time.Duration) (bool, error){
+	valid, res := BotVar.GetCache().GetLcooldown(user.ID, command)
 	if valid {
 		t := res.Add(exp) 
 		//println(t, "  ", time.Now().Unix())
@@ -38,15 +38,17 @@ func LCooldownGet(user structure.Member, cmd string, exp time.Duration) (bool, e
 		}
 		var doc map[string]string
 		resdb.Next(&doc)
-		value, exist := doc["data."+cmd]
+		value, exist := doc["data."+command]
 		if !exist {
 			return false, nil
 		}
 		t, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
-			return false, errors.New("test")
+			return false, errors.New("Error in string conv")
 		}
-		if ( time.Unix(t, 0).Add(exp).Unix() > time.Now().Unix() ) {
+		timeparsed := time.Unix(t, 0)
+		if ( timeparsed.Add(exp).Unix()  > time.Now().Unix() ) {
+			BotVar.GetCache().SetLcool(user, command, timeparsed)
 			return true, nil
 		}
 		return false, nil
