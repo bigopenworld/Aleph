@@ -169,15 +169,6 @@ func (botcache *BotCache) SetMember(memberobj structure.Member) {
 	}
 
 }
-func (botcache *BotCache) SetHcool(memberobj structure.Member,cooldowncmd string, t time.Time) {
-	if config.HCooldownCache {
-		bytes := data.EncodeToBytes(t)
-		if config.HCooldownCompression {
-			bytes = data.Compress(bytes)
-		}
-		botcache.MemberCache.Set(memberobj.ID+cooldowncmd, bytes)
-	}
-}
 func (botcache *BotCache) SetLcool(memberobj structure.Member,cooldowncmd string, t time.Time) {
 	if config.LCooldownCache {
 		bytes := data.EncodeToBytes(t)
@@ -186,7 +177,19 @@ func (botcache *BotCache) SetLcool(memberobj structure.Member,cooldowncmd string
 		}
 		err := botcache.Lcooldown.Set(memberobj.ID+cooldowncmd, bytes)
 		if err != nil {
-			println("error when writing cache")
+			println(cmd.NewFlag(cmd.ERROR),"error when writing cache")
+		}
+	}
+}
+func (botcache *BotCache) SetHcool(memberobj structure.Member,cooldowncmd string, t time.Time) {
+	if config.HCooldownCache {
+		bytes := data.EncodeToBytes(t)
+		if config.HCooldownCompression {
+			bytes = data.Compress(bytes)
+		}
+		err := botcache.Hcooldown.Set(memberobj.ID+cooldowncmd, bytes)
+		if err != nil {
+			println(cmd.NewFlag(cmd.ERROR),"error when writing cache")
 		}
 	}
 }
@@ -225,8 +228,10 @@ func (BotCache *BotCache) GetMember(id string) (bool, structure.Member){
 func (BotCache *BotCache) GetLcooldown(id string, cooldowncmd string) (bool, time.Time){
 	if config.LCooldownCache {
 		bytes, err := BotCache.Lcooldown.Get(id+cooldowncmd)
-		if err != nil {
-			println(err.Error())
+		if err != nil   {
+			if err != bigcache.ErrEntryNotFound {
+				println(cmd.NewFlag(cmd.ERROR),err.Error())
+			}
 			return false, time.Time{}
 		}
 		if config.MemberMemCompression {
@@ -240,7 +245,10 @@ func (BotCache *BotCache) GetLcooldown(id string, cooldowncmd string) (bool, tim
 func (BotCache *BotCache) GetHcooldown(id string, cooldowncmd string) (bool, time.Time){
 	if config.HCooldownCache {
 		bytes, err := BotCache.Hcooldown.Get(id+cooldowncmd)
-		if err != nil {
+		if err != nil   {
+			if err != bigcache.ErrEntryNotFound {
+				println(cmd.NewFlag(cmd.ERROR),err.Error())
+			}
 			return false, time.Time{}
 		}
 		if config.MemberMemCompression {
