@@ -25,7 +25,7 @@ const DBDiscoverHosts = false // should the database automatically connect new s
 
 // Discord config
 
-const Token = "" // enter the bot token
+var Token = get_token("") // enter the bot token like get_token("your-token")
 
 // Bot settings 
 
