@@ -2,13 +2,14 @@ package cmd
 
 import "github.com/fatih/color"
 
-
-const OK = 0
-const ERROR = 1 
-const WARNING = 2
-const SUCCESS = 3
-const FATAL = 4
-const INFO = 5
+const (
+	OK int = iota
+	ERROR
+	WARNING
+	SUCCESS
+	FATAL
+	INFO
+)
 
 /*
 0 => OK
@@ -20,19 +21,19 @@ const INFO = 5
 */
 func NewFlag(flag int) string {
 	switch flag {
-	case OK : 
+	case OK:
 		return color.GreenString("[ OK ] ")
-	case ERROR : 
+	case ERROR:
 		return color.RedString("[ ERROR ] ")
-	case WARNING : 
+	case WARNING:
 		return color.YellowString("[ WARN ] ")
-	case SUCCESS : 
+	case SUCCESS:
 		return color.GreenString("[ SUCCESS ] ")
-	case FATAL : 
+	case FATAL:
 		return color.RedString("[ FATAL ] ")
-	case INFO :
+	case INFO:
 		return color.BlueString("[ INFO ] ")
-	default : 
+	default:
 		return color.HiCyanString("[ UNKNOW ] ")
 	}
 }

@@ -1,7 +1,6 @@
 package discord
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/bigopenworld/discord-bot/lang"
@@ -9,17 +8,17 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type ping struct {
+type help struct {
 	name string
 	minimumperm int
 	cooldown time.Duration
 	allow bool
 }
-func (c *ping) props(s *discordgo.Session, m *discordgo.MessageCreate) {
-	c.name = "ping"
+func (c *help) props(s *discordgo.Session, m *discordgo.MessageCreate) {
+	c.name = "help"
 	c.allow = true
 	c.minimumperm = discordgo.PermissionKickMembers
-	c.cooldown = 5 * time.Second
+	c.cooldown = 2 * time.Second
 	member := structure.Member{
 		ID: m.Author.ID,
 		DiscMember: *m.Author,
@@ -39,20 +38,18 @@ func (c *ping) props(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 
 }
-func (c *ping) checkperm(s *discordgo.Session, m *discordgo.MessageCreate) bool {
+func (c *help) checkperm(s *discordgo.Session, m *discordgo.MessageCreate) bool {
 	p, err := s.UserChannelPermissions(m.Author.ID, m.ChannelID)
 	if err != nil {
 		return false
 	}
 	return p&int64(c.minimumperm) == int64(c.minimumperm) 
 }
-func (c *ping) run(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (c *help) run(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if !c.allow {
 		return
 	}
 
 	//println(status)
-	msgtime, _ := m.Timestamp.Parse()
-	septime := int((time.Now().UnixNano() / int64(time.Millisecond)) - (msgtime.UnixNano()/ int64(time.Millisecond)))
-	s.ChannelMessageSend(m.ChannelID, "pong : " + strconv.Itoa(septime) + " ms")
+	s.ChannelMessageSend(m.ChannelID, lang.EN_HelpMsg)
 }

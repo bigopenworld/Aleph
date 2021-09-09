@@ -37,6 +37,15 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		cmd.run(s, m)
 	}
+	case prefix + "help" : {
+		var cmd Cmd = &help{}
+		cmd.props(s,m)
+		if !cmd.checkperm(s, m) {
+			perm = true 
+			break
+		}
+		cmd.run(s, m)
+	}
 	}
 	if perm {
 		s.ChannelMessageSend(m.ChannelID, lang.EN_PermMissing)
